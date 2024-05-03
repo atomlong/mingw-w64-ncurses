@@ -3,7 +3,7 @@
 
 _pkgname=ncurses
 pkgname=mingw-w64-${_pkgname}
-pkgver=6.4
+pkgver=6.5
 pkgrel=1
 pkgdesc='System V Release 4.0 curses emulation library (mingw-w64)'
 arch=('any')
@@ -13,7 +13,7 @@ makedepends=('mingw-w64-configure' 'mingw-w64-gcc' 'mingw-w64-pkg-config')
 depends=('mingw-w64-crt' 'mingw-w64-regex' 'mingw-w64-libiconv')
 options=('!strip' '!buildflags' 'staticlibs')
 source=("ncurses-${pkgver}.tar.gz"::"https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${pkgver}.tar.gz")
-sha256sums=('6931283d9ac87c5073f30b6290c4c75f21632bb4fc3603ac8100812bed248159')
+sha256sums=('136d91bc269a9a5785e5f9e980bc76ab57428f604ce3e5a5a90cebc767971cc6')
 
 _architectures='i686-w64-mingw32 x86_64-w64-mingw32'
 
@@ -21,7 +21,7 @@ build() {
 	cd "${srcdir}/ncurses-${pkgver}"
 	for _arch in ${_architectures}; do
 		mkdir -p build-${_arch} && pushd build-${_arch}
-		LIBS="$(${_arch}-pkg-config --libs regex) -liconv" ${_arch}-configure \
+		BUILD_EXEEXT='exe' LIBS="$(${_arch}-pkg-config --libs regex) -liconv" ${_arch}-configure \
 			--without-ada \
 			--with-cxx \
 			--with-cxx-shared \
