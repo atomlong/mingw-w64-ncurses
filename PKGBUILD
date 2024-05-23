@@ -21,7 +21,7 @@ build() {
 	cd "${srcdir}/ncurses-${pkgver}"
 	for _arch in ${_architectures}; do
 		mkdir -p build-${_arch} && pushd build-${_arch}
-		BUILD_EXEEXT='exe' LIBS="$(${_arch}-pkg-config --libs regex) -liconv" ${_arch}-configure \
+		LIBS="$(${_arch}-pkg-config --libs regex) -liconv" ${_arch}-configure \
 			--without-ada \
 			--with-cxx \
 			--with-cxx-shared \
