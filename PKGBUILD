@@ -4,7 +4,7 @@
 _pkgname=ncurses
 pkgname=mingw-w64-${_pkgname}
 pkgver=6.5
-pkgrel=1
+pkgrel=2
 pkgdesc='System V Release 4.0 curses emulation library (mingw-w64)'
 arch=('any')
 url='https://www.gnu.org/software/ncurses/'
@@ -15,10 +15,16 @@ options=('!strip' '!buildflags' 'staticlibs')
 source=("ncurses-${pkgver}.tar.gz"::"https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${pkgver}.tar.gz")
 sha256sums=('136d91bc269a9a5785e5f9e980bc76ab57428f604ce3e5a5a90cebc767971cc6')
 
+_srcdir="${_pkgname}-${pkgver}"
 _architectures='i686-w64-mingw32 x86_64-w64-mingw32'
 
+prepare() {
+	cd "${_srcdir}"
+	sed -i 's/cross_compiling=maybe/cross_compiling=yes/' 'configure'
+}
+
 build() {
-	cd "${srcdir}/ncurses-${pkgver}"
+	cd "${_srcdir}"
 	for _arch in ${_architectures}; do
 		mkdir -p build-${_arch} && pushd build-${_arch}
 		LIBS="$(${_arch}-pkg-config --libs regex) -liconv" ${_arch}-configure \
@@ -53,7 +59,7 @@ build() {
 
 package() {
 	for _arch in ${_architectures}; do
-		cd "${srcdir}/ncurses-${pkgver}/build-${_arch}"
+		cd "${srcdir}/${_srcdir}/build-${_arch}"
 		make DESTDIR="${pkgdir}" install
 		[[ -d "${pkgdir}/usr/lib" ]] && rm -rf "${pkgdir}/usr/lib"
 		find "$pkgdir/usr/${_arch}" -name '*.exe' -exec ${_arch}-strip {} \;
